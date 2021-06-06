@@ -114,25 +114,30 @@ class Picker {
 window.onload = () => {
     console.log('Making grid...');
     let grid = new Grid(gridDimY, gridDimX);
-    domCreation(grid);
+    gridToDom(grid);
     let myPicker = new Picker(grid);
     let pallete = getPalette();
-    document.getElementById("button_new_settings").addEventListener('click', ()=>{
-        newGrid();
-    });
-    setInterval(function (){
+    let interval = setInterval(function (){
         myPicker.pickOne()
     }, myPicker.delay)
+    document.getElementById("button_new_settings").addEventListener('click', ()=>{
+        clearInterval(interval);
+        grid = new Grid(document.getElementById("y_setting").value, document.getElementById("x_setting").value);
+        myPicker = new Picker(grid);
+        console.log("Making new grid...");
+        document.getElementById("gridspace").remove();  // Somehow empty doesn't clear, doing workaround
+        let gridspace = document.createElement("div");
+        gridspace.id = "gridspace";
+        document.body.insertBefore(gridspace, document.getElementById("setting"));
+        gridToDom(grid);
+        myPicker.delay = document.getElementById("clicker_setting").value;
+        interval = setInterval(function (){
+            myPicker.pickOne();
+        }, myPicker.delay);
+    });
 };
 
-function newGrid(){
-    console.log("Making new grid...");
-}
 
-
-function domCreation(grid){
-    gridToDom(grid);
-}
 
 function getPalette() {
     fetch("./palette.json")
@@ -163,6 +168,6 @@ function gridToDom(grid) {
             // Add to section.
             newDiv.appendChild(newSub);
         });
-        document.body.insertBefore(newDiv, (document.getElementById("setting")));
+        document.getElementById("gridspace").appendChild(newDiv);
     });
 }

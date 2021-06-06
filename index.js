@@ -5,7 +5,6 @@ const gridDimX = 10;
 const timeDelayClicker = 700;
 const timeDelay = 100;
 
-
 class Cell {
     constructor() {
         this.value = 0;
@@ -144,7 +143,16 @@ function getPalette() {
         .then(response => {
             return response.json();
         })
-        .then(data => console.log(data));
+        .then(data => {
+            console.log(data.palettes);
+            let colorSelection = document.getElementById('color_palette');
+            data.palettes.forEach((p, i) =>{
+                let pal = document.createElement('option');
+                pal.appendChild( document.createTextNode(data.palettes[i].name));
+                pal.value = i;
+                colorSelection.appendChild(pal);
+            });
+        });
 }
 
 

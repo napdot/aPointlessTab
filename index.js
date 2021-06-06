@@ -4,6 +4,8 @@ const gridDimY = 10;
 const gridDimX = 10;
 const timeDelayClicker = 700;
 const timeDelay = 100;
+let palettes = null;
+let selectedColors = null;
 
 class Cell {
     constructor() {
@@ -16,7 +18,17 @@ class Cell {
             console.log('Element is null');
         } else {
             this.el.innerText = this.getValue();
-            this.el.className = ('btn' + this.getValue().toString());
+            if (selectedColors == null){
+                console.log("A")
+                if (this.getValue() % 2 == 0){
+                    this.el.style.borderColor = "rgb(85, 216, 246)";
+                } else {
+                    this.el.style.borderColor = "rgb(216, 85, 246)";
+                }
+            } else {
+                console.log(selectedColors[0]);
+                this.el.style.borderColor = selectedColors[this.getValue()];
+            }
         }
     }
 
@@ -115,20 +127,24 @@ window.onload = () => {
     let grid = new Grid(gridDimY, gridDimX);
     gridToDom(grid);
     let myPicker = new Picker(grid);
-    let pallete = getPalette();
+    getPalette();
     let interval = setInterval(function (){
         myPicker.pickOne()
     }, myPicker.delay)
     document.getElementById("button_new_settings").addEventListener('click', ()=>{
         clearInterval(interval);
+        // Reset
         grid = new Grid(document.getElementById("y_setting").value, document.getElementById("x_setting").value);
         myPicker = new Picker(grid);
         console.log("Making new grid...");
         document.getElementById("gridspace").remove();  // Somehow empty doesn't clear, doing workaround
+        // Create again
         let gridspace = document.createElement("div");
         gridspace.id = "gridspace";
         document.body.insertBefore(gridspace, document.getElementById("setting"));
         gridToDom(grid);
+        // Update some settings
+        
         myPicker.delay = document.getElementById("clicker_setting").value;
         interval = setInterval(function (){
             myPicker.pickOne();
@@ -144,7 +160,7 @@ function getPalette() {
             return response.json();
         })
         .then(data => {
-            console.log(data.palettes);
+            palettes = data.palettes;
             let colorSelection = document.getElementById('color_palette');
             data.palettes.forEach((p, i) =>{
                 let pal = document.createElement('option');

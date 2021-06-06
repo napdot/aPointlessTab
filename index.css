@@ -22,6 +22,7 @@ button{
     border-radius: 10em;
     transform: scale(0.85);
     padding: 10px;
+    background-color: transparent;
 }
 .settings-button{
     font-size: medium;
@@ -48,10 +49,9 @@ button:hover {
 
 .btn1 {
     border-color: rgb(85, 216, 246);
-    background-color: transparent;
+
 }
 
 .btn0 {
     border-color: rgb(216, 85, 246);
-    background-color: transparent;
 }

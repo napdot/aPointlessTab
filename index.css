@@ -1,5 +1,4 @@
 body {
-    padding: 5% 25%;
     background: rgb(0,0,0);
     background: radial-gradient(circle, rgba(0,0,0,1) 0%, rgb(59, 59, 59) 100%);
 }
@@ -9,16 +8,19 @@ body {
 }
 button {
     display: block;
-    width: 100%;
-    height: 100%;
-    background-color: rgb(100%,45,50%);
+    width: 100px;
+    height: 100px;
+    background-color: rgb(205, 205, 205);
     border-radius: 10em;
-    /*
     color: transparent;
-     */
+}
+button:hover{
+
 }
 
-
-.elm {
-    padding: 5%;
+.btn1 {
+    background-color: rgb(85, 216, 246);
+}
+.btn0 {
+    background-color: rgb(216, 85, 246);
 }

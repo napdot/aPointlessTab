@@ -1,26 +1,40 @@
 let date = new Date();
 let hour = date.getHours();
-const gridDim = 10;
-const timeDelay = 500;
+const gridDimY = 10;
+const gridDimX = 10;
+const timeDelay = 100;
 
 class Cell {
     constructor() {
         this.value = 0;
     }
-    change() {
-        if (this.value === 0){
-            this.value = 1;
+    maxValues = 2;
+    el = null;
+    updateEl() {
+        if (this.el == null){
+            console.log('Element is null');
         } else {
-            this.value = 0;
+            this.el.innerText = this.getValue();
+            this.el.className = ('btn' + this.getValue().toString());
         }
+    }
+
+    change() {
+        this.value = (this.getValue() + 1 ) % this.maxValues;
+        this.updateEl();
         return;
     }
     changeDelay(x){
         if (x){
-            setTimeout(this.change(), x*timeDelay)
+            let del = Math.abs(x*timeDelay);
+            let cell = this;
+            setTimeout(function () {
+                cell.change()
+            }, del);
         } else {
             this.change();
         }
+
         return;
     }
     getValue(){
@@ -29,17 +43,21 @@ class Cell {
 }
 
 class Grid {
-    constructor(x,y) {
-        this.height = y;
-        this.width = x;
-        this.content = new Array(this.width);
-        for (let i = 0; i < this.width; i++) {
-            this.content[i] = new Array(this.height);
-            for (let j=0; j< this.height; j++){
+    constructor(y, x) {
+        this.y = y;
+        this.x = x;
+        this.content = new Array(this.x);
+        for (let i = 0; i < this.x; i++) {
+            this.content[i] = new Array(this.y);
+            for (let j=0; j< this.y; j++){
                 this.content[i][j] = new Cell();
             }
         }
     };
+    dimensions(){
+        let text = "x:" + this.x.toString() + " y:" + this.y.toString();
+        return text;
+    }
 
     touch(x,y) {
         this.rowChange(x, y);
@@ -47,34 +65,78 @@ class Grid {
         return;
     }
     rowChange(x, y){
-        for (let i=0; i<this.width; i++){
+        for (let i=0; i<this.x; i++){
             let dist = x - i;
             this.content[i][y].changeDelay(dist);
         }
         return;
     }
     columnChange(x, y){
-        for (let i=0; i<this.height; i++){
+        for (let i=0; i<this.y; i++){
             let dist = y - i;
             this.content[x][i].changeDelay(dist);
         }
         return;
     }
 
-    displayGrid(){
-        let gridText = "";
-        for (let i=0; i<this.height; i++){
-            for (let j=0; j<this.width; j++){
-                gridText +=  (this.content[i][j].getValue()).toString()
+    checkIfAll(){   // Game function
+        let val;
+        for (let i = 0; i < this.x; i++) {
+            for (let j = 0; j < this.y; j++) {
+                if (val === undefined){
+                    val = this.content[i][j].getValue();    // Get value to compare against
+                } else {
+                    if (val !== this.content[i][j].getValue()){ // Compare the value
+                        return
+                    }
+                }
             }
-            gridText += "\n";
         }
-        return gridText;
+        alert("Puzzle solved");
     }
 }
 
 window.onload = (event) => {
     console.log('Making grid...');
-    let grid = new Grid(gridDim, gridDim);
+    let grid = new Grid(gridDimY, gridDimX);
+    domCreation(grid);
 };
 
+function settingsToDom(){
+    return;
+}
+
+function domCreation(grid){
+    gridToDom(grid);
+    settingsToDom();
+}
+
+
+function gridToDom(grid) {
+    grid.content.forEach((c, i) => {
+        let newDiv = document.createElement("div");
+        newDiv.id = ("_" + i.toString());
+        newDiv.className = 'column';
+        c.forEach((r, j) => {
+            // Create button
+            let newSub = document.createElement("button");
+            newSub.innerText = grid.content[i][j].getValue();
+            newSub.addEventListener('click', () => {
+                grid.touch(i, j);
+                console.log(i.toString() + " ", j.toString());
+                //grid.checkIfAll();    If want to have it as a game
+            });
+            if (grid.content[i][j].getValue() === 1){
+                newSub.className = "btn1";
+            } else {
+                newSub.className = 'btn0';
+            }
+
+            newSub.id = ("__" + j.toString());
+            grid.content[i][j].el = newSub;
+            // Add to section.
+            newDiv.appendChild(newSub);
+        });
+        document.body.appendChild(newDiv);
+    });
+}

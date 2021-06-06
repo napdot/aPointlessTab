@@ -6,12 +6,12 @@ const timeDelayClicker = 700;
 let timeDelay = 100;
 let palettes = null;
 let selectedColors = null;
+let maxValues = 2;
 
 class Cell {
     constructor() {
         this.value = 0;
     }
-    maxValues = 2;
     el = null;
     updateEl() {
         if (this.el == null){
@@ -19,21 +19,20 @@ class Cell {
         } else {
             this.el.innerText = this.getValue();
             if (selectedColors == null){
-                console.log("A")
                 if (this.getValue() % 2 == 0){
                     this.el.style.borderColor = "rgb(85, 216, 246)";
                 } else {
                     this.el.style.borderColor = "rgb(216, 85, 246)";
                 }
             } else {
-                console.log(selectedColors[0]);
-                this.el.style.borderColor = selectedColors[this.getValue()];
+                console.log()
+                this.el.style.borderColor = selectedColors.colors[this.getValue()];
             }
         }
     }
 
     change() {
-        this.value = (this.getValue() + 1 ) % this.maxValues;
+        this.value = (this.getValue() + 1 ) % maxValues;
         this.updateEl();
         return;
     }
@@ -122,6 +121,8 @@ class Picker {
     }
 }
 
+
+
 window.onload = () => {
     console.log('Making grid...');
     let grid = new Grid(gridDimY, gridDimX);
@@ -144,8 +145,9 @@ window.onload = () => {
         document.body.insertBefore(gridspace, document.getElementById("setting"));
         gridToDom(grid);
         // Update some settings
-
-        timeDelay = document.getElementById('propagation_setting').value;
+        selectedColors = palettes[document.getElementById("color_palette").value];
+        maxValues = document.getElementById("color_numbers").value;
+        timeDelay = document.getElementById("propagation_setting").value;
         myPicker.delay = document.getElementById("clicker_setting").value;
         interval = setInterval(function (){
             myPicker.pickOne();
@@ -171,7 +173,6 @@ function getPalette() {
             });
         });
 }
-
 
 function gridToDom(grid) {
     grid.content.forEach((c, i) => {

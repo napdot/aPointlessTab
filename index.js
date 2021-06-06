@@ -3,7 +3,7 @@
 const gridDimY = 10;
 const gridDimX = 10;
 const timeDelayClicker = 700;
-const timeDelay = 100;
+let timeDelay = 100;
 let palettes = null;
 let selectedColors = null;
 
@@ -144,7 +144,8 @@ window.onload = () => {
         document.body.insertBefore(gridspace, document.getElementById("setting"));
         gridToDom(grid);
         // Update some settings
-        
+
+        timeDelay = document.getElementById('propagation_setting').value;
         myPicker.delay = document.getElementById("clicker_setting").value;
         interval = setInterval(function (){
             myPicker.pickOne();

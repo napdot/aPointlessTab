@@ -46,12 +46,3 @@ button:hover {
     box-shadow: 0 0 0 2em rgba(181, 181, 181, 0.2);
     transform: scale(1);
 }
-
-.btn1 {
-    border-color: rgb(85, 216, 246);
-
-}
-
-.btn0 {
-    border-color: rgb(216, 85, 246);
-}

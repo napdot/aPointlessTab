@@ -1,8 +1,10 @@
-let date = new Date();
-let hour = date.getHours();
-const gridDimY = 3;
+// let date = new Date();
+// let hour = date.getHours();
+const gridDimY = 10;
 const gridDimX = 10;
-const timeDelay = 300;
+const timeDelayClicker = 700;
+const timeDelay = 100;
+
 
 class Cell {
     constructor() {
@@ -55,8 +57,7 @@ class Grid {
         }
     };
     dimensions(){
-        let text = "x:" + this.x.toString() + " y:" + this.y.toString();
-        return text;
+        return "x:" + this.x.toString() + " y:" + this.y.toString();
     }
 
     touch(x,y) {
@@ -101,7 +102,7 @@ class Picker {
     constructor(grid) {
         this.grid = grid;
     }
-    delay = timeDelay;
+    delay = timeDelayClicker;
 
     pickOne(){
         let i = Math.floor((Math.random() * this.grid.x));
@@ -110,23 +111,35 @@ class Picker {
     }
 }
 
-window.onload = (event) => {
+window.onload = () => {
     console.log('Making grid...');
     let grid = new Grid(gridDimY, gridDimX);
     domCreation(grid);
     let myPicker = new Picker(grid);
+    let pallete = getPalette();
+    document.getElementById("button_new_settings").addEventListener('click', ()=>{
+        newGrid();
+    });
     setInterval(function (){
         myPicker.pickOne()
     }, myPicker.delay)
 };
 
-function settingsToDom(){
-    return;
+function newGrid(){
+    console.log("Making new grid...");
 }
+
 
 function domCreation(grid){
     gridToDom(grid);
-    settingsToDom();
+}
+
+function getPalette() {
+    fetch("./palette.json")
+        .then(response => {
+            return response.json();
+        })
+        .then(data => console.log(data));
 }
 
 
@@ -144,17 +157,12 @@ function gridToDom(grid) {
                 console.log(i.toString() + " ", j.toString());
                 //grid.checkIfAll();    If want to have it as a game
             });
-            if (grid.content[i][j].getValue() === 1){
-                newSub.className = "btn1";
-            } else {
-                newSub.className = 'btn0';
-            }
-
+            newSub.className = "btn" + grid.content[i][j].getValue().toString();
             newSub.id = ("__" + j.toString());
             grid.content[i][j].el = newSub;
             // Add to section.
             newDiv.appendChild(newSub);
         });
-        document.body.appendChild(newDiv);
+        document.body.insertBefore(newDiv, (document.getElementById("setting")));
     });
 }

@@ -1,8 +1,8 @@
 let date = new Date();
 let hour = date.getHours();
-const gridDimY = 10;
+const gridDimY = 3;
 const gridDimX = 10;
-const timeDelay = 100;
+const timeDelay = 300;
 
 class Cell {
     constructor() {
@@ -96,10 +96,28 @@ class Grid {
     }
 }
 
+
+class Picker {
+    constructor(grid) {
+        this.grid = grid;
+    }
+    delay = timeDelay;
+
+    pickOne(){
+        let i = Math.floor((Math.random() * this.grid.x));
+        let j = Math.floor((Math.random() * this.grid.y));
+        this.grid.touch(i, j);
+    }
+}
+
 window.onload = (event) => {
     console.log('Making grid...');
     let grid = new Grid(gridDimY, gridDimX);
     domCreation(grid);
+    let myPicker = new Picker(grid);
+    setInterval(function (){
+        myPicker.pickOne()
+    }, myPicker.delay)
 };
 
 function settingsToDom(){
